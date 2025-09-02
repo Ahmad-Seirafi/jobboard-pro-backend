@@ -1,27 +1,22 @@
+version: "3.9"
 services:
   mongo:
-    image: mongo:7
-    restart: unless-stopped
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-  app:
+    image: mongo:6
+    ports: ["27017:27017"]
+    volumes: [ "mongo_data:/data/db" ]
+
+  api:
     build: .
-    depends_on:
-      - mongo
+    ports: ["4000:4000"]
     environment:
-      - NODE_ENV=production
-      - PORT=4000
-      - MONGO_URI=mongodb://mongo:27017/jobboard_pro
-      - JWT_ACCESS_SECRET=change-me-access
-      - JWT_REFRESH_SECRET=change-me-refresh
-      - JWT_ACCESS_EXPIRES=15m
-      - JWT_REFRESH_EXPIRES=7d
-    ports:
-      - "4000:4000"
-    volumes:
-      - uploads:/app/uploads
+      PORT: 4000
+      HOST: 0.0.0.0
+      MONGO_URI: mongodb://mongo:27017/jobboardpro
+      JWT_ACCESS_SECRET: change-me
+      JWT_REFRESH_SECRET: change-me
+      JWT_ACCESS_EXPIRES: 15m
+      JWT_REFRESH_EXPIRES: 7d
+    depends_on: [ mongo ]
+
 volumes:
   mongo_data:
-  uploads:

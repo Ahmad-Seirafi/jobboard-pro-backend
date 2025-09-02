@@ -1,0 +1,27 @@
+name: backend-ci
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Run tests
+        run: npm test
+        env:
+          NODE_ENV: test
+          JWT_ACCESS_SECRET: test-access
+          JWT_REFRESH_SECRET: test-refresh
+          JWT_ACCESS_EXPIRES: 15m
+          JWT_REFRESH_EXPIRES: 7d
